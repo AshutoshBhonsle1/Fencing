@@ -12,8 +12,16 @@ pygame.display.set_caption("Fencing - One small step")
 WIDTH,HEIGHT = 800,600
 FPS=60
 PLAYER_VEL = 5
+GRAVITY = 1
 
 window = pygame.display.set_mode((WIDTH,HEIGHT))
+
+def flip(sprites):
+    return [pygame.transform.flip(sprite, True, False ) for sprite in sprites]
+
+def load_sprite_sheets(dir1, dir2, width, height, direction=False):
+    pass
+
 
 class Player(pygame.sprite.Sprite): #inherts from pygame.sprite
 
@@ -25,7 +33,8 @@ class Player(pygame.sprite.Sprite): #inherts from pygame.sprite
         self.y_vel = 0
         self.mask = 0
         self.direction="left"
-        self.animation_count=0
+        self.animation_count = 0
+        self.fall_count = 0
 
     def move(self, dx, dy):
         self.rect.x += dx
@@ -44,7 +53,9 @@ class Player(pygame.sprite.Sprite): #inherts from pygame.sprite
             self.animation_count=0
 
     def loop(self, fps):
+        self.y_vel += min(1, (self.fall_count/FPS)*GRAVITY) #does using without min cause any difference?
         self.move(self.x_vel , self.y_vel )
+        self.fall_count += 1
 
     def draw(self,win):
         pygame.draw.rect(win, self.COLOR, self.rect)
